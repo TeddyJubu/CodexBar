@@ -37,6 +37,8 @@ read_when:
 - macOS 14+ targeting; avoid deprecated APIs when refactoring.
 
 ## Shared policy ownership
+- `SettingsValue` owns whitespace and wrapping-quote normalization for config and provider settings. Readers retain
+  their credential precedence, endpoint validation, and provider-specific decoding.
 - Core owns status feed fetching, decoding, and status models through `ProviderStatusFetcher`; the app supplies
   localized labels and component UI, and the CLI supplies its existing status payload and English labels.
 - `KeychainStringStore` owns generic-password operations for legacy credential migration. Provider adapters retain
