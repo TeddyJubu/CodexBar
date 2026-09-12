@@ -5,6 +5,21 @@ import Foundation
 /// known zero usage. Menu bar and icon selection rank by highest used, so an untouched family
 /// never wins there and this stays a display-only filter.
 public enum AntigravityQuotaFamilyVisibility {
+    /// Selects one constrained lane per recognized family, in Gemini then Claude/GPT order.
+    /// Display targets outside SwiftPM can share this policy without depending on internal family IDs.
+    public static func mostConstrainedPerFamily<Row>(
+        in rows: [Row],
+        windowID: KeyPath<Row, String>,
+        title: KeyPath<Row, String>,
+        by isMoreConstrained: (Row, Row) -> Bool) -> [Row]
+    {
+        [KnownFamily.gemini, .claudeGPT].compactMap { family in
+            rows.filter {
+                self.knownFamily(windowID: $0[keyPath: windowID], title: $0[keyPath: title]) == family
+            }.min(by: isMoreConstrained)
+        }
+    }
+
     package enum KnownFamily: String {
         case gemini
         case claudeGPT = "claude-gpt"

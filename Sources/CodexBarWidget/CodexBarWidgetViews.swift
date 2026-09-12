@@ -632,13 +632,8 @@ struct WidgetUsageRow: Identifiable, Equatable {
            limit >= 2,
            rows.contains(where: { $0.id.hasPrefix("antigravity-quota-summary-") })
         {
-            var selected = [AntigravityQuotaFamilyVisibility.KnownFamily.gemini, .claudeGPT].compactMap { family in
-                rows
-                    .filter {
-                        AntigravityQuotaFamilyVisibility.knownFamily(windowID: $0.id, title: $0.title) == family
-                    }
-                    .min(by: self.isMoreConstrained)
-            }
+            var selected = AntigravityQuotaFamilyVisibility.mostConstrainedPerFamily(
+                in: rows, windowID: \.id, title: \.title, by: self.isMoreConstrained)
             let selectedIDs = Set(selected.map(\.id))
             let fallbackRows = rows.enumerated()
                 .filter { !selectedIDs.contains($0.element.id) }

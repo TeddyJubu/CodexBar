@@ -2,6 +2,11 @@
 
 > Every AI coding limit, in your menu bar.
 
+**Notch edition:** this fork also displays usage beside your MacBook's camera, with an expandable usage panel.
+Built on CodexBar with notch geometry and shaping adapted from [Notchly](https://github.com/Notchly/Notchly).
+See [notch usage](docs/notch-usage.md) for controls and local build instructions.
+The upstream downloads and Homebrew package below do not include this fork's notch feature.
+
 [![Latest release](https://img.shields.io/github/v/release/steipete/CodexBar?style=flat-square&color=0a0a0c)](https://github.com/steipete/CodexBar/releases/latest)
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-0a0a0c?style=flat-square)](https://github.com/steipete/CodexBar/releases/latest)
 [![Linux desktop](https://img.shields.io/badge/Linux-Qt_6-1793d1?style=flat-square)](Integrations/Linux/README.md)

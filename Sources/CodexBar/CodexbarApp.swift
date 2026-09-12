@@ -27,6 +27,9 @@ enum CodexBarEntryPoint {
             exit(CodexBarCoreResourceSmoke.run())
         }
         #if DEBUG
+        if NotchUsageNativeProof.runIfRequested() {
+            return
+        }
         if MenuBarLayoutNativeProof.runIfRequested() {
             return
         }
@@ -408,6 +411,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     })
 
     private var statusController: StatusItemControlling?
+    private var notchUsageController: NotchUsageController?
     private var store: UsageStore?
     private var settings: SettingsStore?
     private var account: AccountInfo?
@@ -436,6 +440,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.managedCodexAccountCoordinator = dependencies.managedCodexAccountCoordinator
         self.codexAccountPromotionCoordinator = dependencies.codexAccountPromotionCoordinator
         self.cloudSyncCoordinator = CloudSyncCoordinator(settings: dependencies.settings, state: self.cloudSyncState)
+        self.notchUsageController = NotchUsageController(
+            store: dependencies.store,
+            settings: dependencies.settings,
+            openSettings: { [weak self] in self?.openSettings(pane: .menuBar) })
         self.settingsWindowController = SettingsWindowController(
             settings: dependencies.settings,
             store: dependencies.store,
@@ -468,6 +476,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.installDebugMemoryPressureObserverIfNeeded()
         #endif
         self.ensureStatusController()
+        if !TestProcessSafety.isRunning {
+            self.notchUsageController?.start()
+        }
         self.closeSwiftUISettingsPlaceholderWindow()
         self.observeSettingsApplicationMenuLanguage()
         self.scheduleSettingsApplicationMenuValidation(
@@ -524,6 +535,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        self.notchUsageController?.stop()
         self.cloudSyncCoordinator?.stop()
         self.memoryPressureMonitor.stop()
         #if DEBUG

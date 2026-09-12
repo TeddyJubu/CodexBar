@@ -10,6 +10,26 @@ import Testing
 /// (Sources/CodexBar/MenuCardView+ModelHelpers.swift). Idle families drop out of both surfaces the
 /// same way the widget and the web dashboard drop them.
 struct AntigravityCLILaneParityTests {
+    @Test
+    func `family representatives preserve bucket identity and select the most constrained lane`() {
+        struct Row {
+            let id: String
+            let title: String
+            let remaining: Int
+        }
+        let rows = [
+            Row(id: "antigravity-quota-summary-3p-weekly", title: "Gemini", remaining: 40),
+            Row(id: "antigravity-quota-summary-gemini-session", title: "Gemini", remaining: 80),
+            Row(id: "antigravity-quota-summary-gemini-weekly", title: "Gemini", remaining: 20),
+            Row(id: "unrelated", title: "Gemini", remaining: 0),
+        ]
+        let selected = AntigravityQuotaFamilyVisibility.mostConstrainedPerFamily(
+            in: rows, windowID: \.id, title: \.title, by: { $0.remaining < $1.remaining })
+        #expect(selected.map(\.id) == [rows[2].id, rows[0].id])
+        #expect(AntigravityQuotaFamilyVisibility.mostConstrainedPerFamily(
+            in: [Row](), windowID: \.id, title: \.title, by: { $0.remaining < $1.remaining }).isEmpty)
+    }
+
     private static let now = Date(timeIntervalSince1970: 1_800_000_000)
 
     private static func quotaSummarySnapshot(

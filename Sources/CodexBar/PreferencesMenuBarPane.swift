@@ -6,6 +6,7 @@ struct MenuBarPane: View {
     private static let maxOverviewProviders = SettingsStore.mergedOverviewProviderLimit
 
     @State private var isOverviewProviderPopoverPresented = false
+    @AppStorage("notchUsageEnabled") private var notchUsageEnabled = true
     @Bindable var settings: SettingsStore
     @Bindable var store: UsageStore
 
@@ -27,6 +28,17 @@ struct MenuBarPane: View {
             ].joined(separator: ", ")
 
         Form {
+            Section {
+                Toggle(isOn: self.$notchUsageEnabled) {
+                    SettingsRowLabel(
+                        "Show usage in the notch",
+                        subtitle: "Hover or click beside the camera to see provider usage and reset times. "
+                            + "Appears on displays with a built-in notch.")
+                }
+            } header: {
+                Text("MacBook notch")
+            }
+
             Section {
                 SettingsMenuPicker(
                     selection: self.$settings.menuBarIconStyle,
